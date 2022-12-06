@@ -1,0 +1,135 @@
+﻿@model MTGLibrary.ViewModel.LibraryViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <div class="d-flex justify-content-center">
+        <h2>Card Search:</h2>
+    </div>
+    <div class="d-flex justify-content-center">
+        @using (Html.BeginForm("CardSearch", "Home", FormMethod.Get, new { @class = "ui large form" }))
+        {
+            <div>
+                <input id="autoComplete" type="search" name="name" tabindex="1" autocomplete="on">
+            </div>
+            <div>
+                <input type="submit" value="Search" />
+            </div>
+        }
+    </div>
+</div>
+<div>
+    <div class="d-flex justify-content-center">
+        <h2>Current Library</h2>
+    </div>
+    <div>
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <th scope="col">
+                    Card Name
+                </th>
+                <th scope="col">
+                    Count
+                </th>
+                <th scope="col">
+                    In Deck?
+                </th>
+            </tr>
+           @* @foreach(var uCard in Model.Library){
+                <tr scope="row">
+                    <td class="hover_img">
+                        <a href="#">@uCard.Card.Name<span><img src="@uCard.Card.Image_URL" alt="image" height="400" /></span></a>
+                    </td>
+                    <td>
+                        @uCard.Count
+                    </td>
+                    <td>
+                        @uCard.In_Deck
+                    </td>
+                </tr>
+            }*@
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+
+<script>
+
+    const scryFallACUri = "https://api.scryfall.com/cards/autocomplete?q="
+    const autoCompleteJS = new autoComplete({
+        data: {
+            src: async () => {
+                try {
+                    // Loading placeholder text
+                    document
+                        .getElementById("autoComplete")
+                        .setAttribute("placeholder", "Loading...");
+                    // Fetch External Data Source
+
+                    // Fetch External Data Source
+                    let stringFromAuto = document.getElementById("autoComplete").value;
+
+                    console.log(stringFromAuto);
+
+                    let searchString = stringFromAuto.trim().replace(' ', '+');
+
+                    let searchSource = scryFallACUri + searchString;
+
+                    const source = await fetch(
+                        searchSource
+                    );
+
+                    const cardNames = await source.json();
+
+                    // Post Loading placeholder text
+                    document
+                        .getElementById("autoComplete")
+                        .setAttribute("placeholder", autoCompleteJS.placeHolder);
+                    // Returns Fetched data
+
+                    console.log(cardNames.data);
+
+                    return cardNames.data;
+                } catch (error) {
+                    return error;
+                }
+            }
+        },
+        placeHolder: "Search for new Cards for your library!",
+        resultsList: {
+            element: (list, data) => {
+                const info = document.createElement("p");
+                if (data.results.length > 0) {
+                    info.innerHTML = `Displaying <strong>${data.results.length}</strong> out of <strong>${data.matches.length}</strong> results`;
+                } else {
+                    info.innerHTML = `Found <strong>${data.matches.length}</strong> matching results for <strong>"${data.query}"</strong>`;
+                }
+                list.prepend(info);
+            },
+            noResults: true,
+            maxResults: 15,
+            tabSelect: true
+        },
+        events: {
+            input: {
+                focus: () => {
+                    if (autoCompleteJS.input.value.length) autoCompleteJS.start();
+                }
+            }
+        }
+    });
+
+    autoCompleteJS.input.addEventListener("selection", function (event) {
+        const feedback = event.detail;
+        autoCompleteJS.input.blur();
+        // Prepare User's Selected Value
+        const selection = feedback.selection.value;
+        // Replace Input value with the selected value
+        autoCompleteJS.input.value = selection;
+        // Console log autoComplete data feedback
+        console.log(feedback);
+    });
+
+</script>

@@ -1,0 +1,56 @@
+﻿@model MTGLibrary.ViewModel.CardVM
+@{
+    ViewData["Title"] = "Card Search";
+}
+<div id="CardSearch" class="d-flex ">
+    <table id="CardSearchList">
+    @foreach(var card in Model.Cards){
+        <tr>
+            <td>
+                <img class="d-flex justify-content-center" src="@Url.Content(card.image_uris.normal)" />
+                <input id="@card.card_id" type="button" name="AddCardToLibrary" onclick="AddCardButtonClick(this.id)" class="btn btn-primary" value="Add To Library" />
+            </td>
+        </tr>
+    }
+    </table>
+</div>
+
+<script type="text/javascript">
+    function AddCardButtonClick(cardId){
+        var url = '@Url.Action("CardSearchInsert", "Home")' + '/' + cardId;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            contentType: false,
+            success: function(response){
+                if (response.cardAdded == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Card has been successfully added to your collection!',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: 'Failed!',
+                        text: 'Something broke when trying to put stuff in the DB!',
+                        icon: 'warning',
+                        confirmButtonText: 'Shit'
+                    })
+                }
+            },
+            error: function (response) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error in sending the message',
+                    icon: 'error',
+                    confirmButtonText: 'Fuck'
+                })
+            }
+        });
+        
+        
+    }
+</script>
