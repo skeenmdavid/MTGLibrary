@@ -34,10 +34,12 @@ namespace MTGLibrary.Controllers
 		[Route("Home/CardSearch/{name?}")]
 		public IActionResult CardSearch(string? name)
 		{
+			if (name == null)
+				return View("Error");
 			CardVM vm = new CardVM();
-			var card = externalCardAPIAccess.SearchCardName(name);
+			var card = externalCardAPIAccess.SearchCardName(name).Result;
 
-			vm.Cards = externalCardAPIAccess.GetAllPrints(card.Result).Result;
+			vm.Cards = externalCardAPIAccess.GetAllPrints(card).Result;
 
 			return View(vm);
 		}
@@ -49,9 +51,7 @@ namespace MTGLibrary.Controllers
 			CardVM vm = new CardVM();
 			var card = externalCardAPIAccess.GetCardById(id).Result;
 
-
-
-			//vm.Cards = externalCardAPIAccess.GetAllPrints(card.Result).Result;
+			vm.Cards = externalCardAPIAccess.GetAllPrints(card).Result;
 
 			var result = true;
 

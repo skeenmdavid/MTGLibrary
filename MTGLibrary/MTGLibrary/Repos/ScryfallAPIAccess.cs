@@ -41,8 +41,8 @@ namespace MTGLibrary.Repos
 				HttpResponseMessage response = await client.GetAsync(newSearchURI);
 				if (response.IsSuccessStatusCode)
 				{
-					//ScryFallObject obj = await JsonSerializer.DeserializeAsync<ScryFallObject>(await response.Content.ReadAsStreamAsync());
-					//cards = obj.data.ToList();
+					ScryFallObject obj = await JsonSerializer.DeserializeAsync<ScryFallObject>(await response.Content.ReadAsStreamAsync());
+					cards = obj.data.ToList();
 				}
 			}
 
