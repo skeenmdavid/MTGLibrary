@@ -11,8 +11,6 @@ namespace MTGLibraryDA.Entities
 	{
 		public int Id { get; set; }
 
-		public string _object { get; set; }
-
 		[JsonPropertyName("id")]
 		public string card_id { get; set; }
 		public string oracle_id { get; set; }
@@ -56,13 +54,13 @@ namespace MTGLibraryDA.Entities
 		public string collector_number { get; set; }
 		public bool digital { get; set; }
 		public string rarity { get; set; }
-		public string flavor_text { get; set; }
-		public string card_back_id { get; set; }
-		public string artist { get; set; }
-		public string illustration_id { get; set; }
-		public string border_color { get; set; }
-		public string frame { get; set; }
-		public string security_stamp { get; set; }
+		public string? flavor_text { get; set; }
+		public string? card_back_id { get; set; }
+		public string? artist { get; set; }
+		public string? illustration_id { get; set; }
+		public string? border_color { get; set; }
+		public string? frame { get; set; }
+		public string? security_stamp { get; set; }
 		public bool full_art { get; set; }
 		public bool textless { get; set; }
 		public bool booster { get; set; }
@@ -71,6 +69,8 @@ namespace MTGLibraryDA.Entities
 		public Prices prices { get; set; }
 		public Related_Uris related_uris { get; set; }
 		public Purchase_Uris purchase_uris { get; set; }
+
+		public Library Library { get; set; }
 
 		public int CountOwned { get; set; }
 	}

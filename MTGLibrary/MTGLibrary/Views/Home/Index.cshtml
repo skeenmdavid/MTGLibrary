@@ -33,22 +33,22 @@
                     Count
                 </th>
                 <th scope="col">
-                    In Deck?
+                    Remove All?
                 </th>
             </tr>
-           @* @foreach(var uCard in Model.Library){
+            @foreach(var uCard in Model.Library.scryfallCards){
                 <tr scope="row">
                     <td class="hover_img">
-                        <a href="#">@uCard.Card.Name<span><img src="@uCard.Card.Image_URL" alt="image" height="400" /></span></a>
+                        <a href="#">@uCard.card_name<span><img src="@uCard.image_uris.normal" alt="image" height="400" /></span></a>
                     </td>
                     <td>
-                        @uCard.Count
+                        @uCard.CountOwned
                     </td>
                     <td>
-                        @uCard.In_Deck
+                        <input id="@uCard.card_id" type="button" name="RemoveCard" onclick="RemoveCardButtonClick(this.id)" class="btn btn-danger" value="Remove from Library" />
                     </td>
                 </tr>
-            }*@
+            }
         </table>
     </div>
 </div>
@@ -132,4 +132,42 @@
         console.log(feedback);
     });
 
+
+    function RemoveCardButtonClick(cardId){
+        var url = '@Url.Action("RemoveCardFromLibrary", "Home")' + '/' + cardId;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            contentType: false,
+            success: function(response){
+                if (response.cardRemoved == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Card has been successfully removed from your collection!',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: 'Failed!',
+                        text: 'Something broke when trying to remove stuff from the DB!',
+                        icon: 'warning',
+                        confirmButtonText: 'Shit'
+                    })
+                }
+            },
+            error: function (response) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error in sending the message',
+                    icon: 'error',
+                    confirmButtonText: 'Fuck'
+                })
+            }
+        });
+        
+        
+    }
 </script>

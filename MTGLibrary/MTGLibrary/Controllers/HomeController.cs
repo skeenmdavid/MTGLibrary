@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MTGLibrary.Extensions;
 using MTGLibrary.Interfaces;
 using MTGLibrary.Models;
 using MTGLibrary.ViewModel;
@@ -15,6 +16,8 @@ namespace MTGLibrary.Controllers
 
 		private readonly IDatabaseAccess dbAccess;
 
+		private const int LIBRARY_ID = 2;
+
 
 		public HomeController(ILogger<HomeController> logger, IExternalCardAPIAccess externalCardAPIAccess, IDatabaseAccess dbAccess)
 		{
@@ -27,7 +30,19 @@ namespace MTGLibrary.Controllers
 		public IActionResult Index()
 		{
 			LibraryViewModel vm = new LibraryViewModel();
+			vm.Library = dbAccess.GetLibrary(LIBRARY_ID);
 			return View(vm);
+		}
+
+		[HttpPost]
+		[Route("Home/RemoveCardFromLibrary/{id?}")]
+		public ActionResult RemoveCardFromLibrary(string id)
+		{
+			var cardToRemove = dbAccess.GetCardFromLibrary(id, LIBRARY_ID);
+
+			var result = dbAccess.RemoveCardFromLibrary(cardToRemove, LIBRARY_ID);
+
+			return Json(new { cardRemoved = result });
 		}
 
 		[HttpGet]
@@ -49,11 +64,22 @@ namespace MTGLibrary.Controllers
 		public ActionResult CardSearchInsert(string id)
 		{
 			CardVM vm = new CardVM();
-			var card = externalCardAPIAccess.GetCardById(id).Result;
+			var scryfall = externalCardAPIAccess.GetCardById(id).Result;
 
-			
+			var card = scryfall.ToCard();
 
-			var result = true;
+			//Check and see if Card already exists in library
+			if(dbAccess.GetLibrary(LIBRARY_ID).scryfallCards.Any(c => c.card_id == card.card_id))
+			{
+				var currentCard = dbAccess.GetCardFromLibrary(card.card_id, LIBRARY_ID);
+				currentCard.CountOwned += 1;
+				var success = dbAccess.UpdateCardInLibrary(currentCard, LIBRARY_ID);
+				return Json(new { cardAdded = success });
+			}
+
+			card.CountOwned = 1;
+
+			var result = dbAccess.AddCardToLibrary(card, LIBRARY_ID);
 
 			return Json(new {cardAdded = result});
 		}

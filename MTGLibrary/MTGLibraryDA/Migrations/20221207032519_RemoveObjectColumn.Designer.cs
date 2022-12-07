@@ -4,6 +4,7 @@ using MTGLibraryDA.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MTGLibraryDA.Migrations
 {
     [DbContext(typeof(MTGLibraryContext))]
-    partial class MTGLibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20221207032519_RemoveObjectColumn")]
+    partial class RemoveObjectColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,15 +39,18 @@ namespace MTGLibraryDA.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("artist")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("booster")
                         .HasColumnType("bit");
 
                     b.Property<string>("border_color")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("card_back_id")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("card_id")
@@ -86,12 +91,14 @@ namespace MTGLibraryDA.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("flavor_text")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("foil")
                         .HasColumnType("bit");
 
                     b.Property<string>("frame")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("full_art")
@@ -101,6 +108,7 @@ namespace MTGLibraryDA.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("illustration_id")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("image_status")
@@ -186,6 +194,7 @@ namespace MTGLibraryDA.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("security_stamp")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("set")
