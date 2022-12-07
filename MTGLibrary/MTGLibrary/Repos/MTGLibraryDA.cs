@@ -13,7 +13,7 @@ namespace MTGLibrary.Repos
 			this.db = db;
 		}
 
-		public void AddCard(ScryfallCard card)
+		public void AddCardToLibrary(ScryfallCard card)
 		{
 			throw new NotImplementedException();
 		}

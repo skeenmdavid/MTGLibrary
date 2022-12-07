@@ -21,7 +21,7 @@ namespace MTGLibraryDA.Entities
 		public DbSet<Prices> Prices { get; set; }
 		public DbSet<Purchase_Uris> Purchase_Uris { get; set; }
 		public DbSet<Related_Uris> Related_Uris { get; set; }
-		public DbSet<ScryfallCard> ScryfallCards { get; set; }
+		public DbSet<Card> ScryfallCards { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -32,7 +32,7 @@ namespace MTGLibraryDA.Entities
 			modelBuilder.Entity<Prices>().ToTable("Prices");
 			modelBuilder.Entity<Purchase_Uris>().ToTable("Purchase_Uris");
 			modelBuilder.Entity<Related_Uris>().ToTable("Related_Uris");
-			modelBuilder.Entity<ScryfallCard>().ToTable("ScryfallCards");
+			modelBuilder.Entity<Card>().ToTable("Cards");
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)

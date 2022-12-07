@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MTGLibraryDA.Entities
 {
-	public class ScryfallCard
+	public class Card
 	{
 		public int Id { get; set; }
 

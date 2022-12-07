@@ -10,6 +10,6 @@ namespace MTGLibraryDA.Entities
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		ICollection<ScryfallCard> Cards { get; set; }
+		ICollection<Card> Cards { get; set; }
 	}
 }

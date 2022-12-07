@@ -51,7 +51,7 @@ namespace MTGLibrary.Controllers
 			CardVM vm = new CardVM();
 			var card = externalCardAPIAccess.GetCardById(id).Result;
 
-			vm.Cards = externalCardAPIAccess.GetAllPrints(card).Result;
+			
 
 			var result = true;
 
