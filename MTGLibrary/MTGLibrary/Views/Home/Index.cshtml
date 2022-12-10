@@ -19,6 +19,11 @@
         }
     </div>
 </div>
+<div id="results">Your captured image will appear here...</div>
+<div id="my_camera"></div>
+<form>
+    <input type=button value="Take Snapshot" onClick="take_snapshot()">
+</form>
 <div>
     <div class="d-flex justify-content-center">
         <h2>Current Library</h2>
@@ -54,8 +59,74 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+<script type="text/javascript" src="~/js/webcam.min.js"></script>
 
 <script>
+
+    Webcam.set({
+        width: 1280,
+        height: 720,
+        image_format: 'jpeg',
+        jpeg_quality: 90
+    });
+    Webcam.attach('#my_camera');
+
+    function take_snapshot() {
+        let uploadUrl = '@Url.Action("ProcessImageForResults", "Home")';
+
+        // take snapshot and get image data
+        Webcam.snap(function (data_uri) {
+
+            console.log(data_uri);
+            // display results in page
+            //document.getElementById('results').innerHTML =
+            //    '<h2>Here is your image:</h2>' +
+            //    '<img src="' + data_uri + '"/>';
+            //Webcam.upload(data_uri, uploadUrl, function(code, text){
+
+            //});
+            var image_data = data_uri.replace(/^data\:image\/\w+\;base64\,/, '');
+            console.log(image_data);
+            var payload = { data: image_data }
+            $.ajax({
+                type: 'POST',
+                url: uploadUrl,
+                data: payload,
+                success: function(result){
+
+                }
+            })
+        });
+    }
+
+    function base64DecToArr(sBase64, nBlocksSize) {
+        // convert base64 encoded string to Uintarray
+        // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding
+        var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""), nInLen = sB64Enc.length,
+            nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2,
+            taBytes = new Uint8Array(nOutLen);
+
+        for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+            nMod4 = nInIdx & 3;
+            nUint24 |= this.b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+            if (nMod4 === 3 || nInLen - nInIdx === 1) {
+                for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+                    taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+                }
+                nUint24 = 0;
+            }
+        }
+        return taBytes;
+    }
+
+    function b64ToUint6(nChr) {
+		// convert base64 encoded character to 6-bit integer
+		// from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding
+		return nChr > 64 && nChr < 91 ? nChr - 65
+			: nChr > 96 && nChr < 123 ? nChr - 71
+			: nChr > 47 && nChr < 58 ? nChr + 4
+			: nChr === 43 ? 62 : nChr === 47 ? 63 : 0;
+	}
 
     const scryFallACUri = "https://api.scryfall.com/cards/autocomplete?q="
     const autoCompleteJS = new autoComplete({

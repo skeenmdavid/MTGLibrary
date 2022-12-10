@@ -4,7 +4,12 @@ using MTGLibrary.Interfaces;
 using MTGLibrary.Models;
 using MTGLibrary.ViewModel;
 using MTGLibraryDA.Entities;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Tesseract;
 
 namespace MTGLibrary.Controllers
 {
@@ -82,6 +87,33 @@ namespace MTGLibrary.Controllers
 			var result = dbAccess.AddCardToLibrary(card, LIBRARY_ID);
 
 			return Json(new {cardAdded = result});
+		}
+
+		[HttpPost]
+		public IActionResult ProcessImageForResults(string data)
+		{
+			byte[] bytes = Convert.FromBase64String(data);
+			var trainerLoc = System.AppDomain.CurrentDomain.BaseDirectory + "Tesseract";
+
+			using (var engine = new TesseractEngine(trainerLoc, "eng", EngineMode.Default))
+			{
+				using (var ms = new MemoryStream(bytes))
+				{
+					using (var loadedImg = Pix.LoadFromMemory(ms.ToArray()))
+					using (var page = engine.Process(loadedImg))
+					{
+						var c = page.GetText();
+						//foreach (var word in words) if (c.Contains(word)) found.Add(word);
+					}
+				}
+			}
+			return View();
+		}
+
+		public static string Base64Encode(string plainText)
+		{
+			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+			return System.Convert.ToBase64String(plainTextBytes);
 		}
 
 		public IActionResult Privacy()
