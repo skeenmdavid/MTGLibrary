@@ -21,7 +21,7 @@ namespace MTGLibrary.Controllers
 
 		private readonly IDatabaseAccess dbAccess;
 
-		private const int LIBRARY_ID = 2;
+		private const int LIBRARY_ID = 1;
 
 
 		public HomeController(ILogger<HomeController> logger, IExternalCardAPIAccess externalCardAPIAccess, IDatabaseAccess dbAccess)
@@ -83,6 +83,7 @@ namespace MTGLibrary.Controllers
 			}
 
 			card.CountOwned = 1;
+			card.Location = "Bulk Storage";
 
 			var result = dbAccess.AddCardToLibrary(card, LIBRARY_ID);
 
@@ -107,6 +108,7 @@ namespace MTGLibrary.Controllers
 					}
 				}
 			}
+			//Change this to JSON
 			return View();
 		}
 

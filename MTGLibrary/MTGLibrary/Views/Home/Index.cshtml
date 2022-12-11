@@ -19,28 +19,38 @@
         }
     </div>
 </div>
-<div id="results">Your captured image will appear here...</div>
-<div id="my_camera"></div>
-<form>
-    <input type=button value="Take Snapshot" onClick="take_snapshot()">
-</form>
+<div>
+    <input id="OpenCamButton" type=button value="Open Camera" onClick="OpenCameraSection()">
+    <input id="HideCamButton" type=button value="Hide Camera" onClick="HideCameraSection()">
+</div>
+<div id="CameraSection">
+    <div id="my_camera"></div>
+    <form>
+        <input type=button value="Take Snapshot" onClick="take_snapshot()">
+    </form>
+</div>
 <div>
     <div class="d-flex justify-content-center">
         <h2>Current Library</h2>
     </div>
     <div>
-        <table class="table table-striped table-bordered table-hover">
-            <tr>
-                <th scope="col">
-                    Card Name
-                </th>
-                <th scope="col">
-                    Count
-                </th>
-                <th scope="col">
-                    Remove All?
-                </th>
-            </tr>
+        <table id="LibraryTable" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Card Name
+                    </th>
+                    <th scope="col">
+                        Count
+                    </th>
+                    <th scope="col">
+                        Location
+                    </th>
+                    <th scope="col">
+                        Remove All?
+                    </th>
+                </tr>
+            </thead>
             @foreach(var uCard in Model.Library.scryfallCards){
                 <tr scope="row">
                     <td class="hover_img">
@@ -48,6 +58,9 @@
                     </td>
                     <td>
                         @uCard.CountOwned
+                    </td>
+                    <td>
+                        @uCard.Location
                     </td>
                     <td>
                         <input id="@uCard.card_id" type="button" name="RemoveCard" onclick="RemoveCardButtonClick(this.id)" class="btn btn-danger" value="Remove from Library" />
@@ -63,13 +76,38 @@
 
 <script>
 
-    Webcam.set({
-        width: 1280,
-        height: 720,
-        image_format: 'jpeg',
-        jpeg_quality: 90
-    });
-    Webcam.attach('#my_camera');
+
+    $(document).ready(function(){
+        $.noConflict();
+
+        $("#CameraSection").hide();
+        $("#HideCamButton").hide();
+
+        $("#LibraryTable").DataTable();
+    })
+
+    function OpenCameraSection(){
+
+        $("#CameraSection").show();
+        $("#HideCamButton").show();
+        $("#OpenCamButton").hide();
+
+        Webcam.set({
+            width: 1280,
+            height: 720,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+
+    }
+
+    function HideCameraSection(){
+        $("#CameraSection").hide();
+        $("#HideCamButton").hide();
+        $("#OpenCamButton").show();
+        Webcam.reset();
+    }
 
     function take_snapshot() {
         let uploadUrl = '@Url.Action("ProcessImageForResults", "Home")';
@@ -77,14 +115,6 @@
         // take snapshot and get image data
         Webcam.snap(function (data_uri) {
 
-            console.log(data_uri);
-            // display results in page
-            //document.getElementById('results').innerHTML =
-            //    '<h2>Here is your image:</h2>' +
-            //    '<img src="' + data_uri + '"/>';
-            //Webcam.upload(data_uri, uploadUrl, function(code, text){
-
-            //});
             var image_data = data_uri.replace(/^data\:image\/\w+\;base64\,/, '');
             console.log(image_data);
             var payload = { data: image_data }

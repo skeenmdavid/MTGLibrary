@@ -33,6 +33,10 @@ namespace MTGLibraryDA.Entities
 			modelBuilder.Entity<Purchase_Uris>().ToTable("Purchase_Uris");
 			modelBuilder.Entity<Related_Uris>().ToTable("Related_Uris");
 			modelBuilder.Entity<Card>().ToTable("Cards");
+
+			modelBuilder.Entity<Library>().HasData(
+				new Library{ Id = 1, scryfallCards = new List<Card>() }
+				);
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)

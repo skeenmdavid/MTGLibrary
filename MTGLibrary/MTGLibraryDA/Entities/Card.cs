@@ -73,5 +73,7 @@ namespace MTGLibraryDA.Entities
 		public Library Library { get; set; }
 
 		public int CountOwned { get; set; }
+
+		public string? Location { get; set; }
 	}
 }
