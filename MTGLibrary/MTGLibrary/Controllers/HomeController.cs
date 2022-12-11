@@ -56,7 +56,7 @@ namespace MTGLibrary.Controllers
 		{
 			if (name == null)
 				return View("Error");
-			CardVM vm = new CardVM();
+			ScryFallCardVM vm = new ScryFallCardVM();
 			var card = externalCardAPIAccess.SearchCardName(name).Result;
 
 			vm.Cards = externalCardAPIAccess.GetAllPrints(card).Result;
@@ -68,7 +68,7 @@ namespace MTGLibrary.Controllers
 		[Route("Home/CardSearchInsert/{id?}")]
 		public ActionResult CardSearchInsert(string id)
 		{
-			CardVM vm = new CardVM();
+			ScryFallCardVM vm = new ScryFallCardVM();
 			var scryfall = externalCardAPIAccess.GetCardById(id).Result;
 
 			var card = scryfall.ToCard();
@@ -110,6 +110,41 @@ namespace MTGLibrary.Controllers
 			}
 			//Change this to JSON
 			return View();
+		}
+
+		[HttpGet]
+		public ActionResult LibCardEdit(string cardId)
+		{
+			
+			Card editCard = dbAccess.GetCardFromLibrary(cardId, LIBRARY_ID);
+			ScryfallCard cardForPrices = externalCardAPIAccess.GetCardById(cardId).Result;
+			LibCardVM vm = new LibCardVM()
+			{
+				CardId = cardId,
+				CardName = editCard.card_name,
+				Image_uri = editCard.image_uris.normal,
+				CKPurchaseUri = editCard.purchase_uris.cardmarket,
+				Count = editCard.CountOwned,
+				Location = editCard.Location == null ? "" : editCard.Location,
+				Prices = cardForPrices.prices
+			};
+
+			return View(vm);
+		}
+
+		[HttpPost]
+		public ActionResult LibCardEdit(LibCardVM vm)
+		{
+			Card editCard = dbAccess.GetCardFromLibrary(vm.CardId, LIBRARY_ID);
+			editCard.CountOwned = vm.Count;
+			editCard.Location = vm.Location;
+
+			var success = dbAccess.UpdateCardInLibrary(editCard, LIBRARY_ID);
+
+			if(success)
+				return RedirectToAction("Index");
+
+			return View(vm);
 		}
 
 		public static string Base64Encode(string plainText)

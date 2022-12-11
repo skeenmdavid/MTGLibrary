@@ -54,7 +54,7 @@
             @foreach(var uCard in Model.Library.scryfallCards){
                 <tr scope="row">
                     <td class="hover_img">
-                        <a href="#">@uCard.card_name<span><img src="@uCard.image_uris.normal" alt="image" height="400" /></span></a>
+                        <a href="@Url.Action("LibCardEdit", "Home", new {cardId = uCard.card_id})">@uCard.card_name<span><img src="@uCard.image_uris.normal" alt="image" height="400" /></span></a>
                     </td>
                     <td>
                         @uCard.CountOwned

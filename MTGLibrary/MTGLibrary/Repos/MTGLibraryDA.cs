@@ -53,7 +53,10 @@ namespace MTGLibrary.Repos
 		{
 			try
 			{
-				return db.Libraries.Include(library => library.scryfallCards).FirstOrDefault(l => l.Id == Libid).scryfallCards.FirstOrDefault(sc => sc.card_id == cardId);
+				return db.Libraries.Include(library => library.scryfallCards).ThenInclude(card => card.image_uris)
+					.Include(library => library.scryfallCards).ThenInclude(card => card.prices)
+					.Include(library => library.scryfallCards).ThenInclude(card => card.purchase_uris)
+					.FirstOrDefault(l => l.Id == Libid).scryfallCards.FirstOrDefault(sc => sc.card_id == cardId);
 			}
 			catch(Exception ex)
 			{

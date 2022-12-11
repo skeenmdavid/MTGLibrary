@@ -1,0 +1,36 @@
+﻿@model MTGLibrary.ViewModel.LibCardVM
+@{
+    ViewData["Title"] = "Card Edit";
+}
+<div>
+    <h1>@Model.CardName</h1>
+    <img src="@Model.Image_uri" />
+</div>
+<div>
+    <h2>Prices</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>USD Price</th>
+                <th>Card Kingdom Purchase Uri</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Model.Prices.usd
+                </td>
+                <td>
+                    @Model.CKPurchaseUri
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <form method="post">
+        @Html.EditorFor(model => model.Location)
+        @Html.EditorFor(model => model.Count)
+        <input type="submit" />
+    </form>
+</div>

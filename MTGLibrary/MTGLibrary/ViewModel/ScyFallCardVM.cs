@@ -3,7 +3,7 @@ using MTGLibraryDA.Entities;
 
 namespace MTGLibrary.ViewModel
 {
-    public class CardVM
+    public class ScryFallCardVM
     {
         public List<ScryfallCard> Cards { get; set; }
     }
