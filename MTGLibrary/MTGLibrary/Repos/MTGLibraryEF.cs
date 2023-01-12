@@ -7,11 +7,11 @@ using System.Xml.Serialization;
 
 namespace MTGLibrary.Repos
 {
-	public class MTGLibraryDataAccess : IDatabaseAccess
+	public class MTGLibraryEF : IDatabaseAccess
 	{
 		private MTGLibraryContext db;
 
-		public MTGLibraryDataAccess(MTGLibraryContext db)
+		public MTGLibraryEF(MTGLibraryContext db)
 		{
 			this.db = db;
 		}

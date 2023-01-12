@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MTGLibrary.Interfaces;
+using MTGLibrary.Models;
 using MTGLibrary.Repos;
 using MTGLibraryDA.Entities;
 using Serilog;
@@ -9,12 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var connectionstring = builder.Configuration.GetConnectionString("MTGLibraryDB");
+builder.Services.Configure<MTGLibraryDatabaseSettings>(builder.Configuration.GetSection("MTGLibraryDatabase"));
 
-builder.Services.AddDbContext<MTGLibraryContext>(options => options.UseSqlServer(connectionstring));
+//var connectionstring = builder.Configuration.GetConnectionString("MTGLibraryDB");
+
+//builder.Services.AddDbContext<MTGLibraryContext>(options => options.UseSqlServer(connectionstring));
 
 builder.Services.AddScoped<IExternalCardAPIAccess, ScryfallAPIAccess>();
-builder.Services.AddScoped<IDatabaseAccess, MTGLibraryDataAccess>();
+builder.Services.AddScoped<IDatabaseAccess, MTGLibraryMDB>();
 
 Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Debug()
